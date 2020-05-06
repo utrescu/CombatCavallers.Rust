@@ -8,10 +8,10 @@ use combat::lluitador::ILluitador as lluitador;
 use combat::lluitador::LlocOnPicar;
 
 fn main() {
-    let lluitador1 = LluitadorRandom::new("TrencaCaps".to_string());
-    let lluitador2 = LluitadorRandom::new("TallaFerro".to_string());
+    let lluitador1 = Box::new(LluitadorRandom::new("TrencaCaps".to_string()));
+    let lluitador2 = Box::new(LluitadorRandom::new("TallaFerro".to_string()));
 
-    let ring = combat::Ring::new(&lluitador1, &lluitador2);
+    let ring = combat::Ring::new(lluitador1, lluitador2);
 
     let _ = ring.lluiteu();
 }

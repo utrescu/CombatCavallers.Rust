@@ -52,3 +52,9 @@ pub trait ILluitador {
     fn protegeix(&self) -> Vec<LlocOnPicar>;
     fn pica(&self) -> LlocOnPicar;
 }
+
+impl fmt::Debug for dyn ILluitador {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", self.get_nom_lluitador())
+    }
+}

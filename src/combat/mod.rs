@@ -6,7 +6,7 @@ trait IResultat
 where
     Self: Sized,
 {
-    fn get_nom(self) -> &'static str;
+    fn get_nom<'a>(&'a self) -> &'a str;
     fn get_punts(&self) -> i32;
     fn es_ko(&self) -> bool;
 }
@@ -15,20 +15,19 @@ trait ICombatent
 where
     Self: Sized,
 {
-    fn get_lluitador(&self) -> *const dyn lluitador::ILluitador;
     fn treu_vida(&mut self) -> i32;
     fn pica(&self) -> lluitador::LlocOnPicar;
     fn protegeix(&self) -> Vec<lluitador::LlocOnPicar>;
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug)]
 pub struct Resultat {
-    lluitador: *const dyn lluitador::ILluitador,
+    lluitador: Box<dyn lluitador::ILluitador>,
     vida: i32,
 }
 
 impl Resultat {
-    pub fn new(ll: *const dyn lluitador::ILluitador, v: i32) -> Resultat {
+    pub fn new(ll: Box<dyn lluitador::ILluitador>, v: i32) -> Resultat {
         Resultat {
             lluitador: ll,
             vida: v,
@@ -37,14 +36,8 @@ impl Resultat {
 }
 
 impl IResultat for Resultat {
-    fn get_nom(self) -> &'static str {
-        unsafe {
-            if let Some(val) = self.lluitador.as_ref() {
-                val.get_nom_lluitador()
-            } else {
-                "ERROR"
-            }
-        }
+    fn get_nom<'a>(&'a self) -> &'a str {
+        &self.lluitador.get_nom_lluitador()
     }
 
     fn get_punts(&self) -> i32 {
@@ -57,31 +50,12 @@ impl IResultat for Resultat {
 }
 
 impl ICombatent for Resultat {
-    fn get_lluitador(&self) -> *const dyn lluitador::ILluitador {
-        unsafe {
-            if let Some(val) = self.lluitador.as_ref() {
-                return val;
-            };
-            unreachable!()
-        }
-    }
-
     fn pica(&self) -> lluitador::LlocOnPicar {
-        unsafe {
-            if let Some(val) = self.lluitador.as_ref() {
-                return val.pica();
-            };
-            unreachable!()
-        }
+        self.lluitador.pica()
     }
 
     fn protegeix(&self) -> Vec<lluitador::LlocOnPicar> {
-        unsafe {
-            if let Some(val) = self.lluitador.as_ref() {
-                return val.protegeix();
-            };
-            unreachable!()
-        }
+        self.lluitador.protegeix()
     }
 
     fn treu_vida(&mut self) -> i32 {
@@ -90,14 +64,19 @@ impl ICombatent for Resultat {
     }
 }
 
+// ---- Ring
+
 pub struct Ring {
     resultat: Vec<Resultat>,
 }
 
 impl Ring {
-    pub fn new(l1: *const dyn lluitador::ILluitador, l2: *const dyn lluitador::ILluitador) -> Ring {
+    pub fn new(
+        lluitador1: Box<dyn lluitador::ILluitador>,
+        lluitador2: Box<dyn lluitador::ILluitador>,
+    ) -> Ring {
         Ring {
-            resultat: vec![Resultat::new(l1, 20), Resultat::new(l2, 20)],
+            resultat: vec![Resultat::new(lluitador1, 20), Resultat::new(lluitador2, 20)],
         }
     }
 
@@ -146,16 +125,15 @@ impl Ring {
             qui_pica = qui_rep;
         }
 
-        print!("\n");
         let guanyador = if self.resultat[0].es_ko() {
-            self.resultat[1]
+            &self.resultat[1]
         } else {
-            self.resultat[0]
+            &self.resultat[0]
         };
         let perdedor = if self.resultat[0].es_ko() {
-            self.resultat[0]
+            &self.resultat[0]
         } else {
-            self.resultat[1]
+            &self.resultat[1]
         };
 
         let missatge = if guanyador.get_punts() - perdedor.get_punts() > 5 {
@@ -165,8 +143,9 @@ impl Ring {
         };
 
         print!("{} cau a terra!\n", perdedor.get_nom());
+        print!("\n");
         print!("VICTORIA DE {}. {}\n", guanyador.get_nom(), missatge);
 
-        vec![self.resultat[0], self.resultat[1]]
+        self.resultat
     }
 }
