@@ -32,7 +32,7 @@ pub fn get_all_llocs_on_picar() -> Vec<LlocOnPicar> {
     for lloc in LlocOnPicar::iter() {
         llocs.push(lloc);
     }
-    return llocs;
+    llocs
 }
 
 impl Distribution<LlocOnPicar> for Standard {

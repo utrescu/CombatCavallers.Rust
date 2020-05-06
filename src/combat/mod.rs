@@ -40,19 +40,19 @@ impl IResultat for Resultat {
     fn get_nom(self) -> &'static str {
         unsafe {
             if let Some(val) = self.lluitador.as_ref() {
-                return val.get_nom_lluitador();
+                val.get_nom_lluitador()
             } else {
-                return "ERROR";
+                "ERROR"
             }
         }
     }
 
     fn get_punts(&self) -> i32 {
-        return self.vida;
+        self.vida
     }
 
     fn es_ko(&self) -> bool {
-        return self.vida == 0;
+        self.vida == 0
     }
 }
 
@@ -86,7 +86,7 @@ impl ICombatent for Resultat {
 
     fn treu_vida(&mut self) -> i32 {
         self.vida = self.vida - 1;
-        return self.vida;
+        self.vida
     }
 }
 
@@ -167,6 +167,6 @@ impl Ring {
         print!("{} cau a terra!\n", perdedor.get_nom());
         print!("VICTORIA DE {}. {}\n", guanyador.get_nom(), missatge);
 
-        return vec![self.resultat[0], self.resultat[1]];
+        vec![self.resultat[0], self.resultat[1]]
     }
 }

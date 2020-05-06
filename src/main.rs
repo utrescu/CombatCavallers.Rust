@@ -28,12 +28,12 @@ impl LluitadorRandom {
 
 impl lluitador for LluitadorRandom {
     fn get_nom_lluitador(&self) -> &str {
-        return &self.nom;
+        &self.nom
     }
 
     fn pica(&self) -> LlocOnPicar {
         let pica: LlocOnPicar = rand::random();
-        return pica;
+        pica
     }
 
     fn protegeix(&self) -> Vec<LlocOnPicar> {
@@ -43,6 +43,6 @@ impl lluitador for LluitadorRandom {
         let index = llocs.iter().position(|x| *x == no_protegeix).unwrap();
         llocs.remove(index);
 
-        return llocs;
+        llocs
     }
 }
