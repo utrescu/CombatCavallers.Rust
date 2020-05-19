@@ -7,6 +7,7 @@ use std::fmt;
 use strum::IntoEnumIterator; // 0.17.1
 use strum_macros::EnumIter; // 0.17.1
 
+/// Defineix els punts en els que es pot picar
 #[derive(EnumIter, PartialEq, Eq)]
 pub enum LlocOnPicar {
     Cap,
@@ -47,9 +48,15 @@ impl Distribution<LlocOnPicar> for Standard {
     }
 }
 
+/// Defineix quins mètodes ha de tenir un lluitador per entrar en el Ring
 pub trait ILluitador {
+    /// Retorna el nom de lluitador
     fn get_nom_lluitador(&self) -> &str;
+
+    /// Retorna els tres llocs on es protegeix el lluitador
     fn protegeix(&self) -> Vec<LlocOnPicar>;
+
+    /// Retorna el lloc on pica el lluitador
     fn pica(&self) -> LlocOnPicar;
 }
 

@@ -2,6 +2,10 @@ pub mod lluitador;
 
 use rand::Rng;
 
+/// Resultat d'una lluita. Conté
+/// * Nom del lluitador
+/// * Punts de vida que li queden
+/// * Si ha quedat Ko o no
 trait IResultat
 where
     Self: Sized,
@@ -11,6 +15,8 @@ where
     fn es_ko(&self) -> bool;
 }
 
+/// Estructura interna perquè el Ring pugui treballar amb el
+/// lluitador.
 trait ICombatent
 where
     Self: Sized,
@@ -21,6 +27,7 @@ where
 }
 
 #[derive(Debug)]
+/// Estructura per retornar el resultat d'una lluita entre dos lluitadors en el Ring
 pub struct Resultat {
     lluitador: Box<dyn lluitador::ILluitador>,
     vida: i32,
@@ -64,16 +71,31 @@ impl ICombatent for Resultat {
     }
 }
 
-// ---- Ring
+/// IRing defineix el funcionament del Ring
 pub trait IRing {
+    /// Returns el resultat de l'enfrontament entre els dos lluitadors
+    ///
+    /// Els dos lluitadors s'enfronten entre ells fins que un d'ells queda KO
     fn lluiteu(self) -> Vec<Resultat>;
 }
 
+/// Implementació de IRing amb lluitadors amb 20 de vida inicial
 pub struct Ring {
     resultat: Vec<Resultat>,
 }
 
 impl Ring {
+    /// Crea un Ring amb lluitadors que tenen 20 de vida
+    ///
+    /// # Arguments
+    ///  * `lluitador1` - Primer dels lluitadors
+    ///  * `lluitador2` - Segon lluitador
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// let ring = Ring::new(lluitador1, lluitador2)
+    /// ```
     pub fn new(
         lluitador1: Box<dyn lluitador::ILluitador>,
         lluitador2: Box<dyn lluitador::ILluitador>,
@@ -85,6 +107,9 @@ impl Ring {
 }
 
 impl IRing for Ring {
+    /// Els dos lluitadors s'enfronten entre ells fins que un d'ells queda KO
+    ///
+    /// Returns un objecte de tipus Resultat
     fn lluiteu(mut self) -> Vec<Resultat> {
         print!(
             "Combat entre {} vs {}\n",
