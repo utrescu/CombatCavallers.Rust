@@ -65,6 +65,9 @@ impl ICombatent for Resultat {
 }
 
 // ---- Ring
+pub trait IRing {
+    fn lluiteu(self) -> Vec<Resultat>;
+}
 
 pub struct Ring {
     resultat: Vec<Resultat>,
@@ -79,8 +82,10 @@ impl Ring {
             resultat: vec![Resultat::new(lluitador1, 20), Resultat::new(lluitador2, 20)],
         }
     }
+}
 
-    pub fn lluiteu(mut self) -> Vec<Resultat> {
+impl IRing for Ring {
+    fn lluiteu(mut self) -> Vec<Resultat> {
         print!(
             "Combat entre {} vs {}\n",
             self.resultat[0].get_nom(),

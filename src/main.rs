@@ -6,6 +6,7 @@ extern crate strum_macros;
 
 use combat::lluitador::ILluitador as lluitador;
 use combat::lluitador::LlocOnPicar;
+use combat::IRing;
 
 fn main() {
     let lluitador1 = Box::new(LluitadorRandom::new("TrencaCaps".to_string()));
